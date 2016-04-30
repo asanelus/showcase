@@ -1,0 +1,20 @@
+
+.button:hover{
+	-fx-background-color: #FF6699;
+	
+}
+
+.numbers{
+	-fx-background-color: #B0B0B0;
+
+}
+
+.controls{
+		-fx-background-color: #606060; 
+
+}
+
+.extras{
+	-fx-background-color: #888888; 
+
+}

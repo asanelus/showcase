@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.asanelus</groupId>
+	<artifactId>JavaCalculator</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>JavaCalculator</name>
+	<!-- If you format this file then the line at <commandlineArgs> will be 
+		split in two -->
+	<!-- This will cause an error when the project is run. Put the two lines 
+		into one. -->
+
+	<developers>
+		<developer>
+			<id>1237684</id>
+			<name>Antonika Sanelus</name>
+			<email>antonika.sanelus@dawsoncollege.qc.ca</email>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Dawson College</name>
+	</organization>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- class that has the main method -->
+		<mainClass>com.asanelus.MainApp</mainClass>
+		<!-- name appended to standard jar name to indicate shaded/executable version -->
+		<shadedClassifierName>executable</shadedClassifierName>
+	</properties>
+
+	<dependencies>
+		<!-- Everyone needs a logger, this is my preference -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<!-- only to be used during test phase -->
+			<!-- will not be included in executable jar -->
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<!-- Additional GUI controls -->
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+			<version>8.20.7</version>
+		</dependency>
+		<dependency>
+			<!-- Dialog controls -->
+			<groupId>org.controlsfx</groupId>
+			<artifactId>openjfx-dialogs</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- Goals may be set in the IDE or the pom -->
+		<!-- IDE goals override the defaultGoal -->
+		<defaultGoal>clean compile package exec:java</defaultGoal>
+		<resources>
+			<!-- Normally resources are placed in src/main/resources. Scene Builder 
+				requires the fxml and css files in the same folder and this folder must also 
+				contain the controller class. Maven ignores files that don't end in .java 
+				so the following resource tells Maven to include files that match the pattern 
+				in any folder in src/main/java -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.fxml</include>
+					<include>**/*.css</include>
+				</includes>
+			</resource>
+			<!-- As soon as you list a new resource folder the default is no longer 
+				available. Therefore we need to add it back as a resource folder. -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.png</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<!-- Select the version of the compiler and binary file -->
+				<!-- format of the classfiles -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<!-- sometimes the IDE does not reveal all the important warning -->
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<!-- shade creates an executable jar with the main class -->
+				<!-- showing in the manifest file -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>${shadedClassifierName}</shadedClassifierName>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>${mainClass}</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<!-- executes the program -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.3.1</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<goals>
+							<!-- java runs the code from the main class -->
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<!-- used by java goal -->
+							<mainClass>${mainClass}</mainClass>
+							<!-- used by exec goal -->
+							<executable>${java.home}/bin/java</executable>
+							<commandlineArgs>-jar
+								${project.build.directory}/${project.build.finalName}-${shadedClassifierName}.jar</commandlineArgs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<!-- Executes JUnit tests and writes the results as an xml and txt file -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+			</plugin>
+
+
+		</plugins>
+	</build>
+
+
+</project>
